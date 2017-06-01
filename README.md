@@ -1,2 +1,2 @@
-# jQuery.pisonSlider
-jQuery slider
+# pisonSlider
+jQuery Slider
