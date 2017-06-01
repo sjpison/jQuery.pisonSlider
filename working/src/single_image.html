@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<!--
+#######################################
+	- THE HEAD PART -
+######################################
+-->
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+		<script src="./pisonSlider/jquery.pisonSlider.js"></script>
+		<link rel="stylesheet" href="./pisonSlider/jquery.pisonSlider.css" />
+		<link rel="stylesheet" href="./pisonSlider/theme/default/theme.style.css" />
+</head>
+
+
+
+<!--
+#######################################
+	- THE BODY PART -
+######################################
+-->
+	<body>
+
+
+
+<div id="slider_outer">
+	<ul>
+		<li><a href="./">Default</a></li>
+		<li><a href="./single_image.html">Single Image</a></li>
+	</ul>
+	<ul id="pgallery">
+		<li data-transition="fade" data-startfrom="left,top" data-endto="right,bottom" data-zoom="in" data-zoomfact="1" data-panduration="10" data-colortransition="4">
+			<img alt="" rel="prettyPhoto" src="./resource/1.jpg" data-bw="http://pagelines.tmeister.net/wp-content/uploads/2012/02/katty_bw.jpg" />
+			<div  class="text_overlay">
+				<div id="caption-id-69 " class="kcaption caption_orange wiperight" style="top:65px;left:65px;">
+					THE NEXT GENERATION SLIDER
+				</div>
+				<!-- END INTERNAL FOREACH -->
+				<div id="caption-id-70 " class="kcaption caption_black faderight" style="top:250px;left:750px;">
+					Real Ken Burn animation
+				</div>
+				<!-- END INTERNAL FOREACH -->
+				<div id="caption-id-261 " class="kcaption caption_black wipeleft" style="top:25px;left:25px;">
+					Hi, i'm the <strong>Kenburner Slider</strong>
+				</div>
+				<!-- END INTERNAL FOREACH -->
+				<div id="caption-id-264 " class="kcaption caption_orange wiperight" style="top:290px;left:660px;">
+					Fade &amp; Slide Transition between images
+				</div>
+				<!-- END INTERNAL FOREACH -->
+			</div>
+		</li>
+	</ul>
+</div>
+<div id="debug"></div>
+katty.jpg<br />
+2013om9-01.jpg<br />
+book_bw.jpg<br />
+drink.jpg<br />
+lobby.jpg<br />
+sunset.jpg<br /><br /><br />
+<h2>mode</h2>
+'widthfit' mode(default): full width, height is unlimited<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width(option,stretch,restrict), height(option,stretch,restrict)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;img<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>widthfit tested!</strong><br />
+'stretch' mode: vertical, horizontal centering<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'stretch' mode is almost same with 'widthfit' mode<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width(option,stretch,restrict), height(required,stretch,restrict)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;img<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>stretch tested!</strong><br />
+'filled' mode: vertical, horizontal centering<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'filled' mode is cut extra area<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width(required,stretch,cut overflow), height(required,stretch,cut overflow)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;img<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>filled tested!</strong><br />
+'zoomin' mode: vertical, horizontal centering and zooming<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'zoomin' mode is cut extra area like filled mode, but little bit bigger than filled mode, and zooming<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width(required,stretch,cut overflow), height(required,stretch,cut overflow)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bigger 3% than filled mode<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;canvas<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>zoomin tested!</strong><br />
+
+<h2>effect</h2>
+'none'<br />
+'fade'<br />
+'coverLeft'<br />
+'coverRight'<br />
+
+<h2>thumbnail</h2>
+'top'<br />
+'bottom'<br />
+
+<h2>under IE8(different part)</h2>
+thumbnail background<br />
+zoomin mode(canvas) not support<br />
+img contained box(other browsers use background-image)<br />
+
+
+
+	<script type="text/javascript">
+	// var ps=$('#pgallery').pisonSlider({/*duration:200,*/effect:'random', mode:'zoomin', height:442, width:573, /*autoSlide:true,*/ indicator:true, clickAction:'nextSlide', thumbPosition:'top', useThumbSize:true});
+	var ps=$('#pgallery').pisonSlider({mode:'filled',effect:'random', height:442,
+																		// width:573,
+																		clickAction:'nextSlide',autoSlide:true, indicator:true});
+	</script>
+	</body>
+</html>

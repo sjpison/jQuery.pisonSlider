@@ -1,0 +1,41 @@
+div.pisonSlider.underIE8 div.pisonSlider-canvas div.pisonSlider-canvas-clickarea,
+div.pisonSlider.isIE div.pisonSlider-canvas div.pisonSlider-canvas-clickarea {
+	background-image:url('./images/underIE8_clickarea_background.png');
+}
+/* thumbs arrow */
+div.pisonSlider div.pagearrow {
+	width:16px;
+	height:19px;
+	display:inline-block;
+	cursor:hand;
+	cursor:pointer;
+	vertical-align:middle;
+}
+* html div.pisonSlider div.pagearrow {	display:inline; }
+div.pisonSlider div.thumbs_left_arrow { background-image:url('./images/prevArrow.gif'); }
+div.pisonSlider div.thumbs_right_arrow { background-image:url('./images/nextArrow.gif'); }
+
+/* large button */
+div.pisonSlider div.pisonSlider-largebtn {
+	position:absolute;
+	right:3px;
+	top:3px;
+	background-color:white;
+	border-radius:12px;
+	background-image:url('./images/buttons.png');
+	filter:none;
+	width:24px;
+	height:24px;
+}
+div.pisonSlider div.pisonSlider-largebtn:hover {
+	background-position-x:24px;
+	cursor:hand;
+	cursor:pointer;
+}
+
+/* Error Message */
+div.pisonSlider div.pisonSlider-ErrorMsg {
+	font-size:12px;
+	font-weight:bold;
+	color:red;
+}
