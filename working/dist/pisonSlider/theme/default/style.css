@@ -64,9 +64,10 @@ div.pisonSlider div.pisonSlider-canvas div.pisonSlider-canvas-clickarea {
 	top:0px;
 	left:0px;
 	background:transparent;
-	-webkit-user-select: none; /* webkit (safari, chrome)*/
-    -moz-user-select: none; /* mozilla browsers */
-    -khtml-user-select: none; /* webkit (konqueror) */
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 div.pisonSlider.underIE8 div.pisonSlider-canvas div.pisonSlider-canvas-clickarea,
 div.pisonSlider.isIE div.pisonSlider-canvas div.pisonSlider-canvas-clickarea {
@@ -92,6 +93,7 @@ div.pisonSlider div.pisonSlider-canvas-autoSlideBar {
 	background-color:white;
 	opacity:0.5;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; /* IE 8 */
+	filter:none;
 	z-index:9;
 }
 div.pisonSlider div.pisonSlider-canvas-autoSlideBar-top {
@@ -109,6 +111,7 @@ div.pisonSlider div.pisonSlider-canvas-indicator {
 	float:left;
 	background-color:white;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; /* IE 8 */
+	filter:none;
 	opacity:0.5;
 	width:8px;
 	height:8px;
@@ -134,7 +137,11 @@ div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-none {
 div.pisonSlider div.pisonSlider-thumbs ul:after {content:"";display:block;clear:both;}
 div.pisonSlider div.pisonSlider-thumbs ul li {
 	float:left;
-	display:inline-block;list-style:none;vertical-align:middle;cursor:hand;cursor:pointer;
+	display:inline-block;
+	list-style:none;
+	vertical-align:middle;
+	cursor:hand;
+	cursor:pointer;
 	overflow:hidden;
 	margin-left:4px;
 	background-size:cover;
