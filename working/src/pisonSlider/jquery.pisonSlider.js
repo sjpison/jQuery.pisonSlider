@@ -267,6 +267,8 @@ if (!Array.prototype.indexOf) {
 					else if(this.effect=='normal_random')
 						effect=proc.effect_normal[Math.floor(Math.random() * proc.effect_normal.length)];
 
+					console.log(effect);
+
 					// newimg and preimg and wrap
 					var newimg = $(org_imgs[num]);
 					var newimg_elem=org_imgs[num];
@@ -537,7 +539,8 @@ if (!Array.prototype.indexOf) {
 						//
 						// widthfit mode
 						if(ps.mode=='widthfit' || ps.mode=='stretch') {
-							css.width=defaults.width;
+							// css.width=defaults.width;
+							css.width = defaults.width>0 ? defaults.width : ps_canvas.width();
 							css.height=css.width*this.height/this.width;
 							css.left=0;
 							css.top=0;
