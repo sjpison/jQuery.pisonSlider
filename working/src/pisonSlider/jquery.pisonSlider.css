@@ -162,11 +162,6 @@ div.pisonSlider div.pisonSlider-thumbs ul.pisonSlider-list div.video_wrapper {
 	display:none;
 }
 
-/* thumbs nopage */
-div.pisonSlider div.pisonSlider-thumbs-nopage div.pagearrow {
-	/*display:none !important;*/
-}
-
 /* thumbs position */
 div.pisonSlider div.pisonSlider-thumbs-left { float:right; }
 div.pisonSlider div.pisonSlider-thumbs-right { float:left; }

@@ -49,23 +49,23 @@ if (!Array.prototype.indexOf) {
 				zoominMouseOverStop:	true,
 
 				// thumbnail setting
-				thumbPosition:			'none', // 'none', 'top', 'right', 'bottom', 'left'
-				useThumbPage:			true,
-				numThumbs:				7,
-				useThumbSize:			false,
-				thumbWidth:				75,		// '0' is original size
-				thumbHeight:			75,		// '0' is original size
+				thumbPosition:				'none', // 'none', 'top', 'right', 'bottom', 'left'
+				useThumbPage:				true,
+				numThumbs:					7,
+				useThumbSize:				false,
+				thumbWidth:					75,		// '0' is original size
+				thumbHeight:				75,		// '0' is original size
 				// image processing
-				width:					  0,		// width default is '100%'
-				height:					  440,
+				width:						0,		// width default is '100%'
+				height:						440,
 				// auto slide
-				autoSlide:				false,
-				autoSlideTimer:		5000,
-				autoSlideBar:			true,
-				autoSlideBarPosition:	'bottom',	// 'top', 'bottom'
-				onHoverStop:			true,
+				autoSlide:					false,
+				autoSlideTimer:				5000,
+				autoSlideBar:				true,
+				autoSlideBarPosition:		'bottom',	// 'top', 'bottom'
+				onHoverStop:				true,
 				// indicator
-				indicator:				false,
+				indicator:					false,
 				/***************************
 				 * image transition effect
 				 ***************************/
@@ -75,14 +75,14 @@ if (!Array.prototype.indexOf) {
 				boxEffectDurationFactor:	2,		// box effect duration speed factor value
 				//
 				// events
-				thumbSlideEvent:		'click',	// thumbnail event for slide change
-				SlideLoaded:			null,
-				beforeSlideChange:		null,		// argument: 'before index', 'next index'
+				thumbSlideEvent:			'click',	// thumbnail event for slide change
+				SlideLoaded:				null,
+				beforeSlideChange:			null,		// argument: 'before index', 'next index'
 				/***************************
 				 * user action
 				 ***************************/
-				clickAction:			'link_blank'	// 'link_blank' : open link to blank, if not has link then go to next slide
-														// 'nextSlide': forced next slide
+				clickAction:				'link_blank'	// 'link_blank' : open link to blank, if not has link then go to next slide
+															// 'nextSlide': forced next slide
 			};
 
 			// merging setting values
@@ -174,7 +174,6 @@ if (!Array.prototype.indexOf) {
 					// vertical
 					if($this.data('y') > 0) {
 						var pre = $this.siblings('[data-y='+($this.data('y')-1)+'][data-x='+$this.data('x')+']');
-						console.log(pre.position());
 						if(Math.round(pre.height() + pre.position().top) != Math.round($this.position().top)) {
 							var preY = $this.data('y')-1;
 							pre.css('height','calc('+box_h+'% + 1px)');
@@ -269,8 +268,6 @@ if (!Array.prototype.indexOf) {
 					else if(this.effect=='normal_random')
 						effect=proc.effect_normal[Math.floor(Math.random() * proc.effect_normal.length)];
 
-					console.log(effect);
-
 					// newimg and preimg and wrap
 					var newimg = $(org_imgs[num]);
 					var newimg_elem=org_imgs[num];
@@ -280,6 +277,8 @@ if (!Array.prototype.indexOf) {
 					var newimg_wrap = $('<div class="pisonSlider_img_wrap" data-transition_effect="'+effect+'" />').appendTo(ps_canvas);
 
 					var cssPos=newimg[0].cssPosition();
+
+					console.log(cssPos);
 
 					var canvas_boxes=new Array();
 
@@ -541,8 +540,8 @@ if (!Array.prototype.indexOf) {
 						//
 						// widthfit mode
 						if(ps.mode=='widthfit' || ps.mode=='stretch') {
-							css.width=defaults.width;
-							//css.width = defaults.width>0 ? defaults.width : ps_canvas.width();
+							//css.width=defaults.width;
+							css.width = defaults.width>0 ? defaults.width : ps_canvas.width();
 							css.height=css.width*this.height/this.width;
 							css.left=0;
 							css.top=0;
