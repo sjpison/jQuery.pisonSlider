@@ -153,6 +153,7 @@ if (!Array.prototype.indexOf) {
 			// set process
 			// box position fixing (floating point pixel problem)
 			proc.pixelFixing = function(image_wrapper) {
+				console.log('pixelFixing');
 				var v_cnt = image_wrapper.data('vertical-count');
 				var h_cnt = image_wrapper.data('horizontal-count');
 				var box_w = image_wrapper.data('box-width');
@@ -173,6 +174,7 @@ if (!Array.prototype.indexOf) {
 					// vertical
 					if($this.data('y') > 0) {
 						var pre = $this.siblings('[data-y='+($this.data('y')-1)+'][data-x='+$this.data('x')+']');
+						console.log(pre.position());
 						if(Math.round(pre.height() + pre.position().top) != Math.round($this.position().top)) {
 							var preY = $this.data('y')-1;
 							pre.css('height','calc('+box_h+'% + 1px)');
@@ -344,10 +346,6 @@ if (!Array.prototype.indexOf) {
 					}
 
 					//
-					// box position fixing (floating point pixel problem)
-					proc.pixelFixing(newimg_wrap);
-
-					//
 					// set longest height
 					if(dynamic_height && ps_canvas.height()!=cssPos.height) {
 						var newheight=cssPos.height>preimg.height()?cssPos.height:preimg.height();
@@ -357,6 +355,10 @@ if (!Array.prototype.indexOf) {
 						else if(ps.hDuration)
 							ps_canvas.animate({'height':newheight},ps.hDuration);
 					}
+
+					//
+					// box position fixing (floating point pixel problem)
+					proc.pixelFixing(newimg_wrap);
 
 					//
 					// Slide transition finished function
@@ -539,8 +541,8 @@ if (!Array.prototype.indexOf) {
 						//
 						// widthfit mode
 						if(ps.mode=='widthfit' || ps.mode=='stretch') {
-							// css.width=defaults.width;
-							css.width = defaults.width>0 ? defaults.width : ps_canvas.width();
+							css.width=defaults.width;
+							//css.width = defaults.width>0 ? defaults.width : ps_canvas.width();
 							css.height=css.width*this.height/this.width;
 							css.left=0;
 							css.top=0;
