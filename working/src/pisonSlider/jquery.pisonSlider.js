@@ -159,7 +159,7 @@ if (!Array.prototype.indexOf) {
 				var box_w = image_wrapper.data('box-width');
 				var box_h = image_wrapper.data('box-height');
 
-				image_wrapper.find('.pisonSlider_imgbox').each(function(){
+				image_wrapper.find('.pisonSlider-imgbox').each(function(){
 					var $this = $(this);
 					// horizontal
 					if($this.data('x') > 0) {
@@ -272,13 +272,11 @@ if (!Array.prototype.indexOf) {
 					var newimg = $(org_imgs[num]);
 					var newimg_elem=org_imgs[num];
 					//ps_canvas.stop().find('div.pisonSlider_preimg_wrap').stop().remove();
-					var preimg_wrap = ps_canvas.find('div.pisonSlider_img_wrap:last').stop(true,true).addClass('pisonSlider_preimg_wrap');
+					var preimg_wrap = ps_canvas.find('div.pisonSlider-img-wrap:last').stop(true,true).addClass('pisonSlider_preimg_wrap');
 					var preimg = preimg_wrap.find('img');
-					var newimg_wrap = $('<div class="pisonSlider_img_wrap" data-transition_effect="'+effect+'" />').appendTo(ps_canvas);
+					var newimg_wrap = $('<div class="pisonSlider-img-wrap" data-transition_effect="'+effect+'" />').appendTo(ps_canvas);
 
 					var cssPos=newimg[0].cssPosition();
-
-					console.log(cssPos);
 
 					var canvas_boxes=new Array();
 
@@ -314,7 +312,7 @@ if (!Array.prototype.indexOf) {
 						var box_str='';
 						for(var y=0;y<v_cnt;y++) {
 							for(var x=0;x<h_cnt;x++) {
-								box_str+='<canvas class="pisonSlider_imgbox" data-x="'+x+'" data-y="'+y+'" width="'+box_w+'%" height="'+box_h+'%" style="width:'+box_w+'%;height:'+box_h+'%;left:'+(box_w*x)+'%;top:'+(box_h*y)+'%;" />';
+								box_str+='<canvas class="pisonSlider-imgbox" data-x="'+x+'" data-y="'+y+'" width="'+box_w+'%" height="'+box_h+'%" style="width:'+box_w+'%;height:'+box_h+'%;left:'+(box_w*x)+'%;top:'+(box_h*y)+'%;" />';
 							}
 						}
 
@@ -332,7 +330,7 @@ if (!Array.prototype.indexOf) {
 						var box_str='';
 						for(var y=0;y<v_cnt;y++) {
 							for(var x=0;x<h_cnt;x++) {
-								box_str+='<div class="pisonSlider_imgbox" data-x="'+x+'" data-y="'+y+'" style="width:'+box_w+'%;height:'+box_h+'%;left:'+(box_w*x)+'%;top:'+(box_h*y)+'%;'
+								box_str+='<div class="pisonSlider-imgbox" data-x="'+x+'" data-y="'+y+'" style="width:'+box_w+'%;height:'+box_h+'%;left:'+(box_w*x)+'%;top:'+(box_h*y)+'%;'
 								// under ie8
 								if(underIE8)
 									box_str+='"><img src="'+newimg.attr('src')+'" style="width:'+cssPos.width+'px;height:'+cssPos.height+'px;margin-top:'+(box_h*y*-1+cssPos.top)+'px;margin-left:'+(box_w*x*-1+cssPos.left)+'px;" /></div>';
@@ -347,6 +345,7 @@ if (!Array.prototype.indexOf) {
 					//
 					// set longest height
 					if(dynamic_height && ps_canvas.height()!=cssPos.height) {
+						preimg_wrap.css('height',preimg_wrap.height());
 						var newheight=cssPos.height>preimg.height()?cssPos.height:preimg.height();
 						// fast change
 						if(!ps.hDuration || newimg.is('.pisonSlider_preimg'))
@@ -418,11 +417,11 @@ if (!Array.prototype.indexOf) {
 					// fade effect
 					if(effect=='fade') {
 						// remove it but not removed another side why it's reference copy.
-						newimg_wrap.css('opacity',1).find('.pisonSlider_imgbox').css('opacity',0).animate({'opacity':1},ps.duration,function(){
+						newimg_wrap.css('opacity',1).find('.pisonSlider-imgbox').css('opacity',0).animate({'opacity':1},ps.duration,function(){
 							if(preimg_wrap.length==0)
 								SlideTransitionFisnished();
 						});
-						preimg_wrap.find('.pisonSlider_imgbox').delay(ps.duration/2).animate({'opacity':0},ps.duration/2,function(){
+						preimg_wrap.find('.pisonSlider-imgbox').delay(ps.duration/2).animate({'opacity':0},ps.duration/2,function(){
 							SlideTransitionFisnished();
 						});
 					}
@@ -445,7 +444,7 @@ if (!Array.prototype.indexOf) {
 					// box1
 					else if(effect=='box1') {
 						var duration=ps.duration*ps.boxEffectDurationFactor;
-						var box=newimg_wrap.find('.pisonSlider_imgbox').css('opacity',0);
+						var box=newimg_wrap.find('.pisonSlider-imgbox').css('opacity',0);
 						newimg_wrap.css('opacity',1);
 
 						box.each(function(i){
@@ -458,7 +457,7 @@ if (!Array.prototype.indexOf) {
 					// box2 _ left top to right bottom fadeout
 					else if(effect=='box2') {
 						var duration=ps.duration*ps.boxEffectDurationFactor;
-						var box=newimg_wrap.find('.pisonSlider_imgbox').css('opacity',0);
+						var box=newimg_wrap.find('.pisonSlider-imgbox').css('opacity',0);
 						newimg_wrap.css('opacity',1);
 
 						preimg_wrap.delay(duration/2).animate({'opacity':0},duration*2/3,function(){$(this).remove();});
@@ -473,7 +472,7 @@ if (!Array.prototype.indexOf) {
 					// box3 _ random image box fadeout
 					else if(effect=='box3') {
 						var duration=ps.duration*ps.boxEffectDurationFactor;
-						var box=newimg_wrap.find('.pisonSlider_imgbox').css('opacity',0);
+						var box=newimg_wrap.find('.pisonSlider-imgbox').css('opacity',0);
 						newimg_wrap.css('opacity',1);
 
 						box.each(function(i){
@@ -482,7 +481,7 @@ if (!Array.prototype.indexOf) {
 							box.eq(rand).before($(this));
 						});
 
-						box=newimg_wrap.find('.pisonSlider_imgbox');
+						box=newimg_wrap.find('.pisonSlider-imgbox');
 
 						box.each(function(i){
 							$(this).delay(i*duration/box.length).animate({'opacity':1},duration/2,function() {
@@ -811,7 +810,7 @@ if (!Array.prototype.indexOf) {
 					// 	ps_canvas.height(img.height());
 
 					// box position fixing
-					proc.pixelFixing(ps_canvas.find('div.pisonSlider_img_wrap:last'));
+					proc.pixelFixing(ps_canvas.find('div.pisonSlider-img-wrap:last'));
 				});
 			}
 
