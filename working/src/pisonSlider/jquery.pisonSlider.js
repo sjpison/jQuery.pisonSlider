@@ -345,7 +345,7 @@ if (!Array.prototype.indexOf) {
 					//
 					// set longest height
 					if(dynamic_height && ps_canvas.height()!=cssPos.height) {
-						preimg_wrap.css('height',preimg_wrap.height());
+						preimg_wrap.css('height',preimg_wrap.height()); // preimg_wap height fixing. cuz preimg pixel crashed when height resize
 						var newheight=cssPos.height>preimg.height()?cssPos.height:preimg.height();
 						// fast change
 						if(!ps.hDuration || newimg.is('.pisonSlider_preimg'))
