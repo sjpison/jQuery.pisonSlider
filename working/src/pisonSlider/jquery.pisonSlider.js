@@ -31,21 +31,12 @@ if (!Array.prototype.indexOf) {
 				// default
 				startSlideIndex:		0,
 				/***************************
-				 * image positioning mode
+				 * image mode
 				 ***************************/
-				// 'widthfit' mode(default): full width, height is unlimited
-				//				width(option,stretch,restrict), height(option,stretch,restrict)
-				// 'stretch' mode: vertical, horizontal centering
-				//				'stretch' mode is almost same with 'widthfit' mode
-				//				width(option,stretch,restrict), height(required,stretch,restrict)
-				// 'filled' mode: vertical, horizontal centering
-				//				'filled' mode is cut extra area
-				//				width(required,stretch,cut overflow), height(required,stretch,cut overflow)
-				// 'zoomin' mode: vertical, horizontal centering and zooming
-				//				'zoomin' mode is cut extra area like filled mode, but little bit bigger than filled mode, and zooming
-				//				width(required,stretch,cut overflow), height(required,stretch,cut overflow)
-				//				bigger 3% than filled mode
-				mode:					'widthfit', // 'widthfit'(default),'stretch'(need height),'filled'(need width,height),'zoomin'(need width,height)
+				// 'cover' mode(default) : like css3 background-size:cover;
+				// 'contain' mode
+				// 'zoomin' mode : like cover mode And zooming
+				mode:					'contain',
 				zoominMouseOverStop:	true,
 
 				// thumbnail setting
@@ -56,8 +47,10 @@ if (!Array.prototype.indexOf) {
 				thumbWidth:					75,		// '0' is original size
 				thumbHeight:				75,		// '0' is original size
 				// image processing
-				width:						0,		// width default is '100%'
-				height:						440,
+				width:						'100%',	// width default is '100%'
+				height:						null,	// null, 'auto', 500(it's px), '70%'
+				ratio:						16/9,
+
 				// auto slide
 				autoSlide:					false,
 				autoSlideTimer:				5000,
@@ -102,7 +95,7 @@ if (!Array.prototype.indexOf) {
 
 			// lock zoomin mode in IE8
 			if(underIE8&&defaults.mode=='zoomin')
-				defaults.mode='filled';
+				defaults.mode='cover';
 			// off autoslide if it's not multi image
 			if(this.find('li').length<=1) {
 				defaults.autoSlide = false;
@@ -140,8 +133,6 @@ if (!Array.prototype.indexOf) {
 			var org_imgs = {};
 
 			// set extended values
-			ps.f_width = ps.width;
-			ps.f_height = ps.height;
 			$.extend(ps, defaults);
 
 			// define effect types
@@ -153,7 +144,6 @@ if (!Array.prototype.indexOf) {
 			// set process
 			// box position fixing (floating point pixel problem)
 			proc.pixelFixing = function(image_wrapper) {
-				console.log('pixelFixing');
 				var v_cnt = image_wrapper.data('vertical-count');
 				var h_cnt = image_wrapper.data('horizontal-count');
 				var box_w = image_wrapper.data('box-width');
@@ -538,7 +528,7 @@ if (!Array.prototype.indexOf) {
 
 						//
 						// widthfit mode
-						if(ps.mode=='widthfit' || ps.mode=='stretch') {
+						if(ps.mode=='contain') {
 							//css.width=defaults.width;
 							css.width = defaults.width>0 ? defaults.width : ps_canvas.width();
 							css.height=css.width*this.height/this.width;
@@ -554,19 +544,18 @@ if (!Array.prototype.indexOf) {
 									css.left=(ps_canvas.width()-css.width)/2;
 								}
 							}
+
 							//
-							// stretch mode
-							if(ps.mode=='stretch') {
-								css.top=0;
-								var height=defaults.height;
-								if(css.width=='100%')
-									height=ps_canvas.width()*this.height/this.width;
-								css.top=(ps_canvas.height()-height)/2;
-							}
+							// centering
+							css.top=0;
+							var height=defaults.height;
+							if(css.width=='100%')
+								height=ps_canvas.width()*this.height/this.width;
+							css.top=(ps_canvas.height()-height)/2;
 						}
 						//
 						// filled mode
-						else if(ps.mode=='filled'||ps.mode=='zoomin') {
+						else if(ps.mode=='cover'||ps.mode=='zoomin') {
 							var i_rate=this.width/this.height;
 							// cut left, right
 							if(i_rate > defaults.width/defaults.height) {
@@ -662,36 +651,20 @@ if (!Array.prototype.indexOf) {
 					// next slide preloading
 					if(typeof org_imgs[num+1] == 'undefined' && num+1 < ps_thumbs_ul.find('li').length)
 						this.cacheImage(num+1);
-				},
-				ErrMsg: function(msg) {
-					ps.append('<div class="pisonSlider-ErrorMsg">pisonSlider: '+msg+'</div>');
 				}
 			});
 
 			//
 			// start initialize
-			//
-
-			// message
-			if(ps.mode=='stretch' && ps.height<=0) {
-				ps.ErrMsg('Stretch mode required height');
-				ps.mode='widthfit';
-			} else if(ps.mode=='filled' && (!ps.height || !ps.width)) {
-				ps.ErrMsg('Filled mode required height and width');
-				ps.mode='widthfit';
-			} else if(ps.mode=='zoomin' && (!ps.height || !ps.width)) {
-				ps.ErrMsg('Zoomin mode required height and width');
-				ps.mode='widthfit';
-			}
 
 			// set canvas size
 			var dynamic_height=false;
 			if(ps.width>0)
 				ps_canvas.width(ps.width);
 			// canvas size by mode
-			if(ps.mode=='widthfit')
+			if(ps.mode=='contain')
 				dynamic_height=true;
-			else if(ps.mode=='stretch' || ps.mode=='filled' || ps.mode=='zoomin')
+			else if(ps.mode=='cover' || ps.mode=='zoomin')
 				ps_canvas.height(ps.height);
 
 			// thumbnail link init
@@ -712,6 +685,7 @@ if (!Array.prototype.indexOf) {
 					$(this).find('a img').unwrap();
 				}
 
+				// for IE8
 				if(underIE8 && ps.thumbHeight>0 && img[0].height>0) {
 					// fit by height
 					if(ps.thumbWidth/ps.thumbHeight<img[0].width/img[0].height) {
@@ -803,12 +777,6 @@ if (!Array.prototype.indexOf) {
 			// window resize trigger(not run when setted width)
 			if(defaults.width==0) {
 				$(window).bind('resize.pisonSlider',function() {
-					// var img=$(org_imgs[ps.nowSlide]);
-					// img.css(img[0].cssPosition());
-					// // widthfit mode
-					// if(ps.mode=='widthfit')
-					// 	ps_canvas.height(img.height());
-
 					// box position fixing
 					proc.pixelFixing(ps_canvas.find('div.pisonSlider-img-wrap:last'));
 				});
