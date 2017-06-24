@@ -22,7 +22,8 @@ if (!Array.prototype.indexOf) {
 			// it's for list
 			if((!this.is('ul') && !this.is('ol')) || this.find('li').length == 0) return false;
 
-			this.addClass('pisonSlider-list');
+			var plugin_name = 'pisonSlider';
+			this.addClass(plugin_name+'-list');
 
 			// default value
 			var defaults = {
@@ -131,9 +132,6 @@ if (!Array.prototype.indexOf) {
 
 			// img array
 			var org_imgs = {};
-
-			// set extended values
-			$.extend(ps, defaults);
 
 			// define effect types
 			proc.effect_box = ['box1','box2','box3'];
@@ -250,19 +248,20 @@ if (!Array.prototype.indexOf) {
 					var nowcnt=++ps.NowSlideTransitioningCount;
 
 					// set effect type
-					var effect=this.effect;
-					if(this.effect=='random') {
+					var effect=defaults.effect;
+					if(effect=='random') {
 						effect=proc.effect_list[Math.floor(Math.random() * proc.effect_list.length)];
-					} else if(this.effect=='box_random')
+					} else if(effect=='box_random') {
 						effect=proc.effect_box[Math.floor(Math.random() * proc.effect_box.length)];
-					else if(this.effect=='normal_random')
+					} else if(effect=='normal_random') {
 						effect=proc.effect_normal[Math.floor(Math.random() * proc.effect_normal.length)];
+					}
 
 					// newimg and preimg and wrap
 					var newimg = $(org_imgs[num]);
 					var newimg_elem=org_imgs[num];
-					//ps_canvas.stop().find('div.pisonSlider_preimg_wrap').stop().remove();
-					var preimg_wrap = ps_canvas.find('div.pisonSlider-img-wrap:last').stop(true,true).addClass('pisonSlider_preimg_wrap');
+					//ps_canvas.stop().find('div.pisonSlider-preimg-wrap').stop().remove();
+					var preimg_wrap = ps_canvas.find('div.pisonSlider-img-wrap:last').stop(true,true).addClass('pisonSlider-preimg-wrap');
 					var preimg = preimg_wrap.find('img');
 					var newimg_wrap = $('<div class="pisonSlider-img-wrap" data-transition_effect="'+effect+'" />').appendTo(ps_canvas);
 
@@ -280,7 +279,7 @@ if (!Array.prototype.indexOf) {
 
 					// box effect
 					if(proc.effect_box.indexOf(effect)>=0) {
-						var tmp_canvas_w=defaults.width>0 ? defaults.width : ps_canvas.width();
+						var tmp_canvas_w=ps.data(plugin_name+'-canvas-width');
 						var tmp_canvas_h=cssPos.height;
 						h_cnt = Math.round(tmp_canvas_w / 70);
 						v_cnt = Math.round(tmp_canvas_h / 70);
@@ -298,7 +297,7 @@ if (!Array.prototype.indexOf) {
 					 * image element type
 					 *****************/
 					// canvas box type effects
-					if(ps.mode=='zoomin') {
+					if(defaults.mode=='zoomin') {
 						var box_str='';
 						for(var y=0;y<v_cnt;y++) {
 							for(var x=0;x<h_cnt;x++) {
@@ -334,7 +333,7 @@ if (!Array.prototype.indexOf) {
 
 					//
 					// set longest height
-					if(dynamic_height && ps_canvas.height()!=cssPos.height) {
+					if(defaults.height=='auto' && ps_canvas.height()!=cssPos.height) {
 						preimg_wrap.css('height',preimg_wrap.height()); // preimg_wap height fixing. cuz preimg pixel crashed when height resize
 						var newheight=cssPos.height>preimg.height()?cssPos.height:preimg.height();
 						// fast change
@@ -357,10 +356,10 @@ if (!Array.prototype.indexOf) {
 							return;
 
 						// all preimg_wrap remove when last img animation
-						ps_canvas.find('.pisonSlider_preimg_wrap').remove();
+						ps_canvas.find('.pisonSlider-preimg-wrap').remove();
 
 						// resize height
-						if(dynamic_height && ps_canvas.height()!=cssPos.height) {
+						if(defaults.height=='auto' && ps_canvas.height()!=cssPos.height) {
 							if(ps.hDuration)
 								ps_canvas.animate({'height':cssPos.height},ps.hDuration);
 							else
@@ -378,12 +377,12 @@ if (!Array.prototype.indexOf) {
 
 					//
 					// zoomin annimating
-					if(ps.mode=='zoomin') {
+					if(defaults.mode=='zoomin') {
 						// zoomin mode animating
 						clearInterval(zoomin_interval_before);
 						zoomin_interval_before=zoomin_interval;
 						var i_rate=1.0005;
-						var tmp_w=cssPos.width;
+						var tmp_w=cssPos.e;
 						var tmp_h=cssPos.height;
 						// 25 frames per second
 						zoomin_interval=setInterval(function() {
@@ -407,11 +406,11 @@ if (!Array.prototype.indexOf) {
 					// fade effect
 					if(effect=='fade') {
 						// remove it but not removed another side why it's reference copy.
-						newimg_wrap.css('opacity',1).find('.pisonSlider-imgbox').css('opacity',0).animate({'opacity':1},ps.duration,function(){
+						newimg_wrap.css('opacity',1).find('.pisonSlider-imgbox').css('opacity',0).animate({'opacity':1},defaults.duration,function(){
 							if(preimg_wrap.length==0)
 								SlideTransitionFisnished();
 						});
-						preimg_wrap.find('.pisonSlider-imgbox').delay(ps.duration/2).animate({'opacity':0},ps.duration/2,function(){
+						preimg_wrap.find('.pisonSlider-imgbox').delay(defaults.duration/2).animate({'opacity':0},defaults.duration/2,function(){
 							SlideTransitionFisnished();
 						});
 					}
@@ -422,18 +421,18 @@ if (!Array.prototype.indexOf) {
 						newimg_wrap.css({'left':ps.effect=='coverLeft'?ps_canvas.width():-width,
 									'top':0,
 									'opacity':1,'z-index':2})
-							.animate({'left':0},ps.duration,function(){
+							.animate({'left':0},defaults.duration,function(){
 								if(preimg_wrap.length==0)
 									SlideTransitionFisnished();
 							});
 
-						preimg_wrap.delay(ps.duration/2).animate({'opacity':0},ps.duration/2,function(){
+						preimg_wrap.delay(defaults.duration/2).animate({'opacity':0},defaults.duration/2,function(){
 							SlideTransitionFisnished();
 						});
 					}
 					// box1
 					else if(effect=='box1') {
-						var duration=ps.duration*ps.boxEffectDurationFactor;
+						var duration=defaults.duration*defaults.boxEffectDurationFactor;
 						var box=newimg_wrap.find('.pisonSlider-imgbox').css('opacity',0);
 						newimg_wrap.css('opacity',1);
 
@@ -446,7 +445,7 @@ if (!Array.prototype.indexOf) {
 					}
 					// box2 _ left top to right bottom fadeout
 					else if(effect=='box2') {
-						var duration=ps.duration*ps.boxEffectDurationFactor;
+						var duration=defaults.duration*defaults.boxEffectDurationFactor;
 						var box=newimg_wrap.find('.pisonSlider-imgbox').css('opacity',0);
 						newimg_wrap.css('opacity',1);
 
@@ -461,7 +460,7 @@ if (!Array.prototype.indexOf) {
 					}
 					// box3 _ random image box fadeout
 					else if(effect=='box3') {
-						var duration=ps.duration*ps.boxEffectDurationFactor;
+						var duration=defaults.duration*defaults.boxEffectDurationFactor;
 						var box=newimg_wrap.find('.pisonSlider-imgbox').css('opacity',0);
 						newimg_wrap.css('opacity',1);
 
@@ -524,11 +523,37 @@ if (!Array.prototype.indexOf) {
 
 					// image default position, use after loaded
 					img.cssPosition=function() {
-						var css={};
+						var css={
+							width:ps.data(plugin_name+'-canvas-width'),
+							height:ps.data(plugin_name+'-canvas-height'),
+							top:0,
+							left:0
+						};
+						var canvas_size = {
+							width:css.width,
+							height:css.height
+						};
 
 						//
+						// contain mode
+						if(defaults.mode=='contain' || defaults.mode=='cover') {
+							var img_ratio = this.width / this.height;
+							if(defaults.height=='auto') {
+								css.height = css.width / img_ratio;
+							} else {
+								var actual_ratio = canvas_size.width / canvas_size.height;
+								if(actual_ratio > img_ratio) {
+									css.width = canvas_size.height * img_ratio;
+									css.left = (canvas_size.width - css.width) / 2;
+								} else {
+									css.height = canvas_size.width / img_ratio;
+									css.top = (canvas_size.height - css.height) / 2;
+								}
+							}
+						}
+						//
 						// widthfit mode
-						if(ps.mode=='contain') {
+						else if(defaults.mode=='widthfit') {
 							//css.width=defaults.width;
 							css.width = defaults.width>0 ? defaults.width : ps_canvas.width();
 							css.height=css.width*this.height/this.width;
@@ -555,7 +580,7 @@ if (!Array.prototype.indexOf) {
 						}
 						//
 						// filled mode
-						else if(ps.mode=='cover'||ps.mode=='zoomin') {
+						else if(defaults.mode=='cover'||defaults.mode=='zoomin') {
 							var i_rate=this.width/this.height;
 							// cut left, right
 							if(i_rate > defaults.width/defaults.height) {
@@ -579,10 +604,10 @@ if (!Array.prototype.indexOf) {
 						}
 
 						// rounding
-						if(css.top && css.top!=0) css.top=Math.floor(css.top);
-						if(css.left && css.left!=0) css.left=Math.floor(css.left);
-						if(css.height && !isNaN(css.height)) css.height=Math.ceil(css.height);
-						if(css.width && !isNaN(css.width)) css.width=Math.ceil(css.width);
+						css.top=Math.floor(css.top);
+						css.left=Math.floor(css.left);
+						css.height=Math.ceil(css.height);
+						css.width=Math.ceil(css.width);
 
 						return css;
 					}
@@ -654,18 +679,38 @@ if (!Array.prototype.indexOf) {
 				}
 			});
 
-			//
-			// start initialize
+			/**
+			 * Start Initialize
+			 */
+			// set mode
+			ps.addClass(plugin_name+'-mode-'+defaults.mode);
 
-			// set canvas size
-			var dynamic_height=false;
-			if(ps.width>0)
-				ps_canvas.width(ps.width);
-			// canvas size by mode
-			if(ps.mode=='contain')
-				dynamic_height=true;
-			else if(ps.mode=='cover' || ps.mode=='zoomin')
-				ps_canvas.height(ps.height);
+			// set width
+			if(defaults.width!='100%') {
+				ps_canvas.width(defaults.width);
+			}
+			var _tmp_canvas_width = ps_canvas.width();
+			ps.data(plugin_name+'-canvas-width', _tmp_canvas_width);
+
+			// set height
+			var _tmp_canvas_height = null;
+			if(defaults.height=='auto' && defaults.mode=='contain') {
+				ps.addClass(plugin_name+'-autoHeight');
+				defaults.height = 'auto';
+				_tmp_canvas_height = 0;
+			} else if(defaults.height==null || defaults.height=='auto') { // ratio mode
+				_tmp_canvas_height = _tmp_canvas_width / defaults.ratio;
+			} else {
+				ps_canvas.height(defaults.height);
+				_tmp_canvas_height = ps_canvas.height();
+			}
+			ps.data(plugin_name+'-canvas-height', _tmp_canvas_height);
+			if(_tmp_canvas_height>0) {
+				ps_canvas.height(_tmp_canvas_height);
+			}
+			/**
+			 * End Initialize
+			 */
 
 			// thumbnail link init
 			ps_thumbs_ul.find('li').each(function(n){
@@ -725,7 +770,7 @@ if (!Array.prototype.indexOf) {
 
 				ps.nextSlide();
 			});
-			if(ps.mode=='zoomin'&&ps.zoominMouseOverStop) {
+			if(defaults.mode=='zoomin'&&defaults.zoominMouseOverStop) {
 				ps_canvas.find('div.pisonSlider-canvas-clickarea').hover(function(){
 					zoomin_interval_stop=true;
 				},function(){

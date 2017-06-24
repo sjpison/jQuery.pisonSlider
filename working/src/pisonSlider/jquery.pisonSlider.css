@@ -55,6 +55,11 @@ div.pisonSlider div.pisonSlider-canvas div.pisonSlider-img-wrap .pisonSlider-img
 	background-size:cover;
 	background-position: center;
 }
+div.pisonSlider.pisonSlider-mode-contain div.pisonSlider-canvas div.pisonSlider-img-wrap .pisonSlider-imgbox div {
+	background-color:white;
+	background-size:contain;
+	background-repeat:no-repeat;
+}
 div.pisonSlider div.pisonSlider-canvas div.pisonSlider-canvas-clickarea {
 	width:100%;
 	height:100%;
