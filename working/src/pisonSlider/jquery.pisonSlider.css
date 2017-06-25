@@ -50,6 +50,7 @@ div.pisonSlider div.pisonSlider-canvas div.pisonSlider-img-wrap .pisonSlider-img
 }
 div.pisonSlider div.pisonSlider-canvas div.pisonSlider-img-wrap .pisonSlider-imgbox canvas {
 	position:absolute;
+	background:white;
 	top:0px;
 	left:0px;
 }

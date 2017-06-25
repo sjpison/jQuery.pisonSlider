@@ -277,7 +277,17 @@ if (!Array.prototype.indexOf) {
 					var h_cnt=1;
 					var v_cnt=1;
 					var _tmp_canvas_w=ps.data(plugin_name+'-canvas-width');
-					var _tmp_canvas_h=cssPos.height;
+					var _tmp_canvas_h=cssPos.height; // auto
+					if(defaults.height!='auto') {	// no auto
+						_tmp_canvas_h = ps.data(plugin_name+'-canvas-height');
+						if(_tmp_canvas_h.charAt(_tmp_canvas_h.length-1) == '%') {
+							_tmp_canvas_h = _tmp_canvas_w * _tmp_canvas_h.substr(0,_tmp_canvas_h.length-1) / 100;
+						}
+					}
+					var canvas_elem_size = {
+							width:_tmp_canvas_w,
+							height:_tmp_canvas_h
+						}
 
 					// box effect
 					if(proc.effect_box.indexOf(effect)>=0) {
@@ -285,6 +295,8 @@ if (!Array.prototype.indexOf) {
 						v_cnt = Math.round(_tmp_canvas_h / defaults.boxHeight);
 						box_w = box_w/h_cnt;
 						box_h = box_h/v_cnt;
+						canvas_elem_size.width = defaults.boxWidth+10;
+						canvas_elem_size.height = defaults.boxHeight+10;
 					}
 
 					// set data to wrapper
@@ -304,7 +316,7 @@ if (!Array.prototype.indexOf) {
 							if(underIE8) {
 								box_str+='<img src="'+newimg.attr('src')+'" style="width:'+cssPos.width+'px;height:'+cssPos.height+'px;margin-top:'+(box_h*y*-1+cssPos.top)+'px;margin-left:'+(box_w*x*-1+cssPos.left)+'px;" />';
 							} else if(defaults.zoomin) {
-								box_str+='<canvas width="'+(defaults.boxWidth+10)+'" height="'+(defaults.boxHeight+10)+'" />';
+								box_str+='<canvas width="'+canvas_elem_size.width+'" height="'+canvas_elem_size.height+'" />';
 							}
 							else {
 								box_str+='<div style="background-image:url(\''+newimg.attr('src')+'\');width:'+(h_cnt*100)+'%;height:'+(v_cnt*100)+'%;left:-'+x+'00%;top:-'+y+'00%;" />';
@@ -375,27 +387,39 @@ if (!Array.prototype.indexOf) {
 
 					//
 					// zoomin annimating
-					// if(defaults.zoomin) {
-					// 	// zoomin mode animating
-					// 	clearInterval(zoomin_interval_before);
-					// 	zoomin_interval_before=zoomin_interval;
-					// 	var i_rate=1.0005;
-					// 	var tmp_w=cssPos.e;
-					// 	var tmp_h=cssPos.height;
-					// 	// 25 frames per second
-					// 	zoomin_interval=setInterval(function() {
-					// 		if(zoomin_interval_stop) return;
+					if(defaults.zoomin) {
+						// zoomin mode animating
+						clearInterval(zoomin_interval_before);
+						zoomin_interval_before=zoomin_interval;
+						var i_rate=1.0006;
+						var tmp_pos = {
+								width:cssPos.width,
+								height:cssPos.height,
+								top:0,
+								left:0
+							}
+						// 25 frames per second
+						zoomin_interval=setInterval(function() {
+							if(zoomin_interval_stop) return;
 
-					// 		for (var i in canvas_boxes) {
-					// 			canvas_boxes[i].ctx.drawImage(newimg[0],cssPos.left-(tmp_w-cssPos.width)/2 -box_w*canvas_boxes[i].x,cssPos.top-(tmp_h-cssPos.height)/2 -box_h*canvas_boxes[i].y,tmp_w,tmp_h);
-					// 		}
-
-					// 		tmp_w*=i_rate;
-					// 		tmp_h*=i_rate;
-					// 		if(tmp_w>cssPos.width*1.3)
-					// 			clearInterval(zoomin_interval);
-					// 	},40);
-					// }
+							var _before_tmp_w = tmp_pos.width;
+							var _before_tmp_h = tmp_pos.height;
+							tmp_pos.width*=i_rate;
+							tmp_pos.height*=i_rate;
+							tmp_pos.top += (_before_tmp_h - tmp_pos.height) / 2;
+							tmp_pos.left += (_before_tmp_w - tmp_pos.width) / 2;
+							
+							for (var i in canvas_boxes) {
+								canvas_boxes[i].ctx.drawImage(newimg[0],
+															tmp_pos.left + cssPos.left-_tmp_canvas_w/h_cnt*canvas_boxes[i].x,
+															tmp_pos.top + cssPos.top-_tmp_canvas_h/v_cnt*canvas_boxes[i].y,
+															tmp_pos.width,
+															tmp_pos.height);
+							}
+							if(tmp_pos.width>cssPos.width*1.3)
+								clearInterval(zoomin_interval);
+						},40);
+					}
 
 					/***********
 					// effects
@@ -527,6 +551,11 @@ if (!Array.prototype.indexOf) {
 							top:0,
 							left:0
 						};
+						if(css.height.charAt(css.height.length-1) == '%') {
+							css.height = css.width * css.height.substr(0,css.height.length-1) / 100;
+						}
+
+
 						var canvas_size = {
 							width:css.width,
 							height:css.height
@@ -537,7 +566,7 @@ if (!Array.prototype.indexOf) {
 						var img_ratio = this.width / this.height;
 						if(defaults.height=='auto') {
 							css.height = css.width / img_ratio;
-						} else {
+						} else if(defaults.mode=='contain') { // contain
 							var actual_ratio = canvas_size.width / canvas_size.height;
 							if(actual_ratio > img_ratio) {
 								css.width = canvas_size.height * img_ratio;
@@ -545,6 +574,15 @@ if (!Array.prototype.indexOf) {
 							} else {
 								css.height = canvas_size.width / img_ratio;
 								css.top = (canvas_size.height - css.height) / 2;
+							}
+						} else { // cover
+							var actual_ratio = canvas_size.width / canvas_size.height;
+							if(actual_ratio > img_ratio) {
+								css.height = canvas_size.width / img_ratio;
+								css.top = (canvas_size.height - css.height) / 2;
+							} else {
+								css.width = canvas_size.height * img_ratio;
+								css.left = (canvas_size.width - css.width) / 2;
 							}
 						}
 
@@ -639,20 +677,18 @@ if (!Array.prototype.indexOf) {
 
 			// set height
 			var _tmp_canvas_height = null;
-			if(defaults.height=='auto' && defaults.mode=='contain') {
+			if(defaults.height=='auto') {
 				ps.addClass(plugin_name+'-autoHeight');
 				defaults.height = 'auto';
 				_tmp_canvas_height = 0;
-			} else if(defaults.height==null || defaults.height=='auto') { // ratio mode
-				_tmp_canvas_height = _tmp_canvas_width / defaults.ratio;
+			} else if(defaults.height==null) { // ratio mode
+				_tmp_canvas_height = (100 / defaults.ratio) + '%';
+				ps_canvas.css('padding-top',_tmp_canvas_height);
 			} else {
-				ps_canvas.height(defaults.height);
-				_tmp_canvas_height = ps_canvas.height();
+				_tmp_canvas_height = defaults.height; // px
+				ps_canvas.css('padding-top',_tmp_canvas_height);
 			}
 			ps.data(plugin_name+'-canvas-height', _tmp_canvas_height);
-			if(_tmp_canvas_height>0) {
-				ps_canvas.height(_tmp_canvas_height);
-			}
 			/**
 			 * End Initialize
 			 */
@@ -765,9 +801,10 @@ if (!Array.prototype.indexOf) {
 
 			//
 			// window resize trigger(not run when setted width)
-			if(defaults.width==0) {
+			if(isNaN(defaults.width)) {
 				$(window).bind('resize.'+plugin_name,function() {
 					// box position fixing
+					console.log('resize');
 					proc.pixelFixing(ps_canvas.find('div.pisonSlider-img-wrap:last'));
 				});
 			}
