@@ -36,13 +36,6 @@ div.pisonSlider div.pisonSlider-canvas div.pisonSlider-img-wrap {
 	opacity:0;
 	z-index:2;
 }
-div.pisonSlider div.pisonSlider-canvas div.pisonSlider-img-wrap canvas {
-	position:absolute;
-	top:0px;
-	left:0px;
-	width:100%;
-	height:100%;
-}
 div.pisonSlider div.pisonSlider-canvas div.pisonSlider-img-wrap .pisonSlider-imgbox {
 	position:absolute;
 	background-repeat:no-repeat;
@@ -54,6 +47,11 @@ div.pisonSlider div.pisonSlider-canvas div.pisonSlider-img-wrap .pisonSlider-img
 	position:absolute;
 	background-size:cover;
 	background-position: center;
+}
+div.pisonSlider div.pisonSlider-canvas div.pisonSlider-img-wrap .pisonSlider-imgbox canvas {
+	position:absolute;
+	top:0px;
+	left:0px;
 }
 div.pisonSlider.pisonSlider-mode-contain div.pisonSlider-canvas div.pisonSlider-img-wrap .pisonSlider-imgbox div {
 	background-color:white;

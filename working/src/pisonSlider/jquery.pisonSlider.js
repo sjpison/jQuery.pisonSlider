@@ -38,6 +38,7 @@ if (!Array.prototype.indexOf) {
 				// 'contain' mode
 				// 'zoomin' mode : like cover mode And zooming
 				mode:					'contain',
+				zoomin:					false,
 				zoominMouseOverStop:	true,
 
 				// thumbnail setting
@@ -47,6 +48,8 @@ if (!Array.prototype.indexOf) {
 				useThumbSize:				false,
 				thumbWidth:					75,		// '0' is original size
 				thumbHeight:				75,		// '0' is original size
+				boxWidth:					70,		// box Width for box effect
+				boxHeight:					70,		// box height for box effect
 				// image processing
 				width:						'100%',	// width default is '100%'
 				height:						null,	// null, 'auto', 500(it's px), '70%'
@@ -94,9 +97,6 @@ if (!Array.prototype.indexOf) {
 			var isIE = navigator.userAgent.match(/MSIE/i)!=null;
 			var underIE8 = isIE && navigator.userAgent.match(/MSIE (\d)/i)[1]<9 && navigator.userAgent.match(/MSIE (\d)/i)[1]>4;
 
-			// lock zoomin mode in IE8
-			if(underIE8&&defaults.mode=='zoomin')
-				defaults.mode='cover';
 			// off autoslide if it's not multi image
 			if(this.find('li').length<=1) {
 				defaults.autoSlide = false;
@@ -144,8 +144,8 @@ if (!Array.prototype.indexOf) {
 			proc.pixelFixing = function(image_wrapper) {
 				var v_cnt = image_wrapper.data('vertical-count');
 				var h_cnt = image_wrapper.data('horizontal-count');
-				var box_w = image_wrapper.data('box-width');
-				var box_h = image_wrapper.data('box-height');
+				var box_w = image_wrapper.data('box-width-percent');
+				var box_h = image_wrapper.data('box-height-percent');
 
 				image_wrapper.find('.pisonSlider-imgbox').each(function(){
 					var $this = $(this);
@@ -276,13 +276,13 @@ if (!Array.prototype.indexOf) {
 					var box_h = '100';
 					var h_cnt=1;
 					var v_cnt=1;
+					var _tmp_canvas_w=ps.data(plugin_name+'-canvas-width');
+					var _tmp_canvas_h=cssPos.height;
 
 					// box effect
 					if(proc.effect_box.indexOf(effect)>=0) {
-						var tmp_canvas_w=ps.data(plugin_name+'-canvas-width');
-						var tmp_canvas_h=cssPos.height;
-						h_cnt = Math.round(tmp_canvas_w / 70);
-						v_cnt = Math.round(tmp_canvas_h / 70);
+						h_cnt = Math.round(_tmp_canvas_w / defaults.boxWidth);
+						v_cnt = Math.round(_tmp_canvas_h / defaults.boxHeight);
 						box_w = box_w/h_cnt;
 						box_h = box_h/v_cnt;
 					}
@@ -290,45 +290,43 @@ if (!Array.prototype.indexOf) {
 					// set data to wrapper
 					newimg_wrap.data('vertical-count',v_cnt);
 					newimg_wrap.data('horizontal-count',h_cnt);
-					newimg_wrap.data('box-width',box_w);
-					newimg_wrap.data('box-height',box_h);
+					newimg_wrap.data('box-width-percent',box_w);
+					newimg_wrap.data('box-height-percent',box_h);
 
 					/*****************
 					 * image element type
 					 *****************/
-					// canvas box type effects
-					if(defaults.mode=='zoomin') {
-						var box_str='';
-						for(var y=0;y<v_cnt;y++) {
-							for(var x=0;x<h_cnt;x++) {
-								box_str+='<canvas class="pisonSlider-imgbox" data-x="'+x+'" data-y="'+y+'" width="'+box_w+'%" height="'+box_h+'%" style="width:'+box_w+'%;height:'+box_h+'%;left:'+(box_w*x)+'%;top:'+(box_h*y)+'%;" />';
+					var box_str='';
+					for(var y=0;y<v_cnt;y++) {
+						for(var x=0;x<h_cnt;x++) {
+							box_str+='<div class="'+plugin_name+'-imgbox" data-x="'+x+'" data-y="'+y+'" style="width:'+box_w+'%;height:'+box_h+'%;left:'+(box_w*x)+'%;top:'+(box_h*y)+'%;">'
+							// under ie8
+							if(underIE8) {
+								box_str+='<img src="'+newimg.attr('src')+'" style="width:'+cssPos.width+'px;height:'+cssPos.height+'px;margin-top:'+(box_h*y*-1+cssPos.top)+'px;margin-left:'+(box_w*x*-1+cssPos.left)+'px;" />';
+							} else if(defaults.zoomin) {
+								box_str+='<canvas width="'+(defaults.boxWidth+10)+'" height="'+(defaults.boxHeight+10)+'" />';
 							}
+							else {
+								box_str+='<div style="background-image:url(\''+newimg.attr('src')+'\');width:'+(h_cnt*100)+'%;height:'+(v_cnt*100)+'%;left:-'+x+'00%;top:-'+y+'00%;" />';
+							}
+							box_str += '</div>';
 						}
+					}
+					newimg_wrap.append(box_str);
 
-						newimg_wrap.append(box_str).find('canvas').each(function(i){
+					if(defaults.zoomin) {
+						newimg_wrap.find('canvas').each(function(i){
 							canvas_boxes[i]={
 								ctx:this.getContext("2d"),
-								x:$(this).data('x'),
-								y:$(this).data('y')
+								x:$(this).parent().data('x'),
+								y:$(this).parent().data('y')
 							}
-							canvas_boxes[i].ctx.drawImage(newimg[0],cssPos.left-box_w*canvas_boxes[i].x,cssPos.top-box_h*canvas_boxes[i].y,cssPos.width,cssPos.height);
+							canvas_boxes[i].ctx.drawImage(newimg[0],
+														cssPos.left-_tmp_canvas_w/h_cnt*canvas_boxes[i].x,
+														cssPos.top-_tmp_canvas_h/v_cnt*canvas_boxes[i].y,
+														cssPos.width,
+														cssPos.height);
 						});
-					}
-					// box type effects
-					else {
-						var box_str='';
-						for(var y=0;y<v_cnt;y++) {
-							for(var x=0;x<h_cnt;x++) {
-								box_str+='<div class="pisonSlider-imgbox" data-x="'+x+'" data-y="'+y+'" style="width:'+box_w+'%;height:'+box_h+'%;left:'+(box_w*x)+'%;top:'+(box_h*y)+'%;'
-								// under ie8
-								if(underIE8)
-									box_str+='"><img src="'+newimg.attr('src')+'" style="width:'+cssPos.width+'px;height:'+cssPos.height+'px;margin-top:'+(box_h*y*-1+cssPos.top)+'px;margin-left:'+(box_w*x*-1+cssPos.left)+'px;" /></div>';
-								else {
-									box_str+='"><div style="background-image:url(\''+newimg.attr('src')+'\');width:'+(h_cnt*100)+'%;height:'+(v_cnt*100)+'%;left:-'+x+'00%;top:-'+y+'00%;" /></div>';
-								}
-							}
-						}
-						newimg_wrap.append(box_str);
 					}
 
 					//
@@ -377,27 +375,27 @@ if (!Array.prototype.indexOf) {
 
 					//
 					// zoomin annimating
-					if(defaults.mode=='zoomin') {
-						// zoomin mode animating
-						clearInterval(zoomin_interval_before);
-						zoomin_interval_before=zoomin_interval;
-						var i_rate=1.0005;
-						var tmp_w=cssPos.e;
-						var tmp_h=cssPos.height;
-						// 25 frames per second
-						zoomin_interval=setInterval(function() {
-							if(zoomin_interval_stop) return;
+					// if(defaults.zoomin) {
+					// 	// zoomin mode animating
+					// 	clearInterval(zoomin_interval_before);
+					// 	zoomin_interval_before=zoomin_interval;
+					// 	var i_rate=1.0005;
+					// 	var tmp_w=cssPos.e;
+					// 	var tmp_h=cssPos.height;
+					// 	// 25 frames per second
+					// 	zoomin_interval=setInterval(function() {
+					// 		if(zoomin_interval_stop) return;
 
-							for (var i in canvas_boxes) {
-								canvas_boxes[i].ctx.drawImage(newimg[0],cssPos.left-(tmp_w-cssPos.width)/2 -box_w*canvas_boxes[i].x,cssPos.top-(tmp_h-cssPos.height)/2 -box_h*canvas_boxes[i].y,tmp_w,tmp_h);
-							}
+					// 		for (var i in canvas_boxes) {
+					// 			canvas_boxes[i].ctx.drawImage(newimg[0],cssPos.left-(tmp_w-cssPos.width)/2 -box_w*canvas_boxes[i].x,cssPos.top-(tmp_h-cssPos.height)/2 -box_h*canvas_boxes[i].y,tmp_w,tmp_h);
+					// 		}
 
-							tmp_w*=i_rate;
-							tmp_h*=i_rate;
-							if(tmp_w>cssPos.width*1.3)
-								clearInterval(zoomin_interval);
-						},40);
-					}
+					// 		tmp_w*=i_rate;
+					// 		tmp_h*=i_rate;
+					// 		if(tmp_w>cssPos.width*1.3)
+					// 			clearInterval(zoomin_interval);
+					// 	},40);
+					// }
 
 					/***********
 					// effects
@@ -535,72 +533,19 @@ if (!Array.prototype.indexOf) {
 						};
 
 						//
-						// contain mode
-						if(defaults.mode=='contain' || defaults.mode=='cover') {
-							var img_ratio = this.width / this.height;
-							if(defaults.height=='auto') {
-								css.height = css.width / img_ratio;
+						// Image Positioning
+						var img_ratio = this.width / this.height;
+						if(defaults.height=='auto') {
+							css.height = css.width / img_ratio;
+						} else {
+							var actual_ratio = canvas_size.width / canvas_size.height;
+							if(actual_ratio > img_ratio) {
+								css.width = canvas_size.height * img_ratio;
+								css.left = (canvas_size.width - css.width) / 2;
 							} else {
-								var actual_ratio = canvas_size.width / canvas_size.height;
-								if(actual_ratio > img_ratio) {
-									css.width = canvas_size.height * img_ratio;
-									css.left = (canvas_size.width - css.width) / 2;
-								} else {
-									css.height = canvas_size.width / img_ratio;
-									css.top = (canvas_size.height - css.height) / 2;
-								}
+								css.height = canvas_size.width / img_ratio;
+								css.top = (canvas_size.height - css.height) / 2;
 							}
-						}
-						//
-						// widthfit mode
-						else if(defaults.mode=='widthfit') {
-							//css.width=defaults.width;
-							css.width = defaults.width>0 ? defaults.width : ps_canvas.width();
-							css.height=css.width*this.height/this.width;
-							css.left=0;
-							css.top=0;
-
-							if(defaults.height) {
-								var height=ps_canvas.width()*this.height/this.width;
-								// change height
-								if(height>defaults.height) {
-									css.height=defaults.height;
-									css.width=defaults.height*this.width/this.height;
-									css.left=(ps_canvas.width()-css.width)/2;
-								}
-							}
-
-							//
-							// centering
-							css.top=0;
-							var height=defaults.height;
-							if(css.width=='100%')
-								height=ps_canvas.width()*this.height/this.width;
-							css.top=(ps_canvas.height()-height)/2;
-						}
-						//
-						// filled mode
-						else if(defaults.mode=='cover'||defaults.mode=='zoomin') {
-							var i_rate=this.width/this.height;
-							// cut left, right
-							if(i_rate > defaults.width/defaults.height) {
-								css.height=defaults.height;
-								css.width=i_rate*css.height;
-								css.left=(defaults.width-css.width)/2;
-								css.top=0;
-							}
-							// cut top, bottom
-							else {
-								css.width=defaults.width;
-								css.height=css.width/i_rate;
-								css.top=(defaults.height-css.height)/2;
-								css.left=0;
-							}
-						}
-						//
-						// default
-						else {
-							css.width='100%';
 						}
 
 						// rounding
@@ -770,7 +715,7 @@ if (!Array.prototype.indexOf) {
 
 				ps.nextSlide();
 			});
-			if(defaults.mode=='zoomin'&&defaults.zoominMouseOverStop) {
+			if(defaults.zoomin&&defaults.zoominMouseOverStop) {
 				ps_canvas.find('div.pisonSlider-canvas-clickarea').hover(function(){
 					zoomin_interval_stop=true;
 				},function(){
@@ -821,7 +766,7 @@ if (!Array.prototype.indexOf) {
 			//
 			// window resize trigger(not run when setted width)
 			if(defaults.width==0) {
-				$(window).bind('resize.pisonSlider',function() {
+				$(window).bind('resize.'+plugin_name,function() {
 					// box position fixing
 					proc.pixelFixing(ps_canvas.find('div.pisonSlider-img-wrap:last'));
 				});
