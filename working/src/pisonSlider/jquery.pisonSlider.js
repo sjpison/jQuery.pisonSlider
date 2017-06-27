@@ -804,7 +804,6 @@ if (!Array.prototype.indexOf) {
 			if(isNaN(defaults.width)) {
 				$(window).bind('resize.'+plugin_name,function() {
 					// box position fixing
-					console.log('resize');
 					proc.pixelFixing(ps_canvas.find('div.pisonSlider-img-wrap:last'));
 				});
 			}
