@@ -22,7 +22,7 @@
 	- THE BODY PART -
 ######################################
 -->
-	<body>
+<body>
 
 
 
@@ -144,6 +144,15 @@ drink.jpg<br />
 lobby.jpg<br />
 sunset.jpg<br /><br /><br />
 <h2>mode</h2>
+<p>
+'height:auto' is very important thing...<br />
+'cover' and 'contain' is same action in 'height:auto'
+<p>
+'contain', 'cover' is act like background-size in css3
+<p>
+'zoomin' is not recommend contain mode. because the corners move unnaturally. 
+
+
 'widthfit' mode(default): full width, height is unlimited<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width(option,stretch,restrict), height(option,stretch,restrict)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;img<br />
@@ -184,13 +193,14 @@ img contained box(other browsers use background-image)<br />
 
 	<script type="text/javascript">
 	// var ps=$('#pgallery').pisonSlider({/*duration:200,*/effect:'random', mode:'zoomin', height:442, width:573, /*autoSlide:true,*/ indicator:true, clickAction:'nextSlide', thumbPosition:'top', useThumbSize:true});
-	var ps=$('#pgallery').pisonSlider({mode:'filled',
-																		//mode:'zoomin',
-																		effect:'random',
-																		//height:442,
-																		//width:1000,
-																		clickAction:'nextSlide',
-																		autoSlide:false, indicator:true});
+	var ps=$('#pgallery').pisonSlider({mode:'cover',
+									// mode:'zoomin',
+									//effect:'box1',
+									//zoomin:true,
+									//height:842,
+									//width:1000,
+									clickAction:'nextSlide',
+									autoSlide:false, indicator:true});
 	</script>
 	</body>
 </html>
