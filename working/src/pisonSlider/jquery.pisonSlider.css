@@ -168,7 +168,11 @@ div.pisonSlider div.pisonSlider-thumbs ul.pisonSlider-list div.video_wrapper {
 }
 
 /* thumbs position */
-div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-left { float:right; }
+div.pisonSlider div.pisonSlider-canvas.pisonSlider-thumbs-left {
+	width:80%;
+	float:right;
+}
+div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-left { float:right; width:20%;}
 div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-right { float:left; }
 div.pisonSlider:after {
 	content:"";
