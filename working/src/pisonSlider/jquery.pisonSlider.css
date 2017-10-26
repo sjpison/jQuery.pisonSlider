@@ -168,8 +168,8 @@ div.pisonSlider div.pisonSlider-thumbs ul.pisonSlider-list div.video_wrapper {
 }
 
 /* thumbs position */
-div.pisonSlider div.pisonSlider-thumbs-left { float:right; }
-div.pisonSlider div.pisonSlider-thumbs-right { float:left; }
+div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-left { float:right; }
+div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-right { float:left; }
 div.pisonSlider:after {
 	content:"";
 	display:block;
