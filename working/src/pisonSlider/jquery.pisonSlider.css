@@ -9,6 +9,12 @@ ul.pisonSlider-ul li img { display:none; }
 div.pisonSlider {
 	text-align:center;
 	margin-bottom: 10px;
+	position:relative;
+}
+div.pisonSlider:after {
+	content:"";
+	display:block;
+	clear:both;
 }
 
 /* canvas */
@@ -172,10 +178,32 @@ div.pisonSlider div.pisonSlider-canvas.pisonSlider-thumbs-left {
 	width:80%;
 	float:right;
 }
-div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-left { float:right; width:20%;}
-div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-right { float:left; }
-div.pisonSlider:after {
-	content:"";
+div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-left,
+div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-right {
+	position:absolute;
+	left:0;
+	top:0;
+	bottom:0;
+	width:20%;
+}
+div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-right {
+	left:initial;
+	right:0;
+}
+div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-left ul,
+div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-right ul {
+	position: absolute;
+	top:6%;
+	bottom:6%;
+	left:0;
+	right:0;
+	overflow:hidden;
+}
+div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-left ul li,
+div.pisonSlider div.pisonSlider-thumbs.pisonSlider-thumbs-right ul li {
 	display:block;
-	clear:both;
+	height:25%;
+	width:100%;
+	float:none;
+	margin:0;
 }
