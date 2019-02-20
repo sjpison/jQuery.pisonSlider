@@ -10,7 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "graceful-fs": "^4.1.15",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-clean-css": "^2.4.0",
     "gulp-concat": "^2.6.1",
     "gulp-header": "^1.8.8",
